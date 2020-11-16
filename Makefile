@@ -8,12 +8,14 @@ MANPAGE  = $(PROGNM).1
 
 install:
 		install -Dm755 $(PROGNM)  -t $(DESTDIR)$(BINDIR)
+		install -m755 genmonifypop.sh  $(DESTDIR)$(BINDIR)/genmonifypop
 		install -Dm644 $(MANPAGE) -t $(DESTDIR)$(MANDIR)
 		install -Dm644 LICENSE    -t $(DESTDIR)$(SHRDIR)/licenses/$(PROGNM)
 .PHONY: install
 
 uninstall:
 	rm $(DESTDIR)$(BINDIR)/$(PROGNM)
+	rm $(DESTDIR)$(BINDIR)/genmonifypop
 	rm $(DESTDIR)$(MANDIR)/$(MANPAGE)
 	rm -rf $(DESTDIR)$(SHRDIR)/licenses/$(PROGNM)
 .PHONY: uninstall
