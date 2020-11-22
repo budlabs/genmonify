@@ -3,8 +3,8 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-genmonify - version: 2020.11.16.7
-updated: 2020-11-16 by budRich
+genmonify - version: 2020.11.22.0
+updated: 2020-11-22 by budRich
 EOB
 }
 
