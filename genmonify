@@ -3,8 +3,8 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-genmonify - version: 2020.11.16.7
-updated: 2020-11-16 by budRich
+genmonify - version: 2020.11.22.0
+updated: 2020-11-22 by budRich
 EOB
 }
 
@@ -68,9 +68,9 @@ main(){
     op+="<txt><span"
     op+="${__o[foreground]:+" foreground='${__o[foreground]}'"}"
     op+="${__o[background]:+" background='${__o[background]}'"}"
-    op+=">$message</span></txt>"
+    op+=">${message//&/&amp;}</span></txt>"
 
-    op+="${__o[tooltip]:+$'\n'<tool>${__o[tooltip]}</tool>}"
+    op+="${__o[tooltip]:+$'\n'<tool>${__o[tooltip]//&/&amp;}</tool>}"
     op+="${__o[icon]:+$'\n'<icon>${__o[icon]}</icon>}"
     op+="${__o[click]:+$'\n'<click>${__o[click]}</click>}"
     op+="${__o[iconclick]:+$'\n'<iconclick>${__o[iconclick]}</iconclick>}"
