@@ -53,9 +53,9 @@ main(){
     op+="<txt><span"
     op+="${__o[foreground]:+" foreground='${__o[foreground]}'"}"
     op+="${__o[background]:+" background='${__o[background]}'"}"
-    op+=">$message</span></txt>"
+    op+=">${message//&/&amp;}</span></txt>"
 
-    op+="${__o[tooltip]:+$'\n'<tool>${__o[tooltip]}</tool>}"
+    op+="${__o[tooltip]:+$'\n'<tool>${__o[tooltip]//&/&amp;}</tool>}"
     op+="${__o[icon]:+$'\n'<icon>${__o[icon]}</icon>}"
     op+="${__o[click]:+$'\n'<click>${__o[click]}</click>}"
     op+="${__o[iconclick]:+$'\n'<iconclick>${__o[iconclick]}</iconclick>}"
