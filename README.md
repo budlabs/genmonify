@@ -230,7 +230,19 @@ Show version and exit.
 
 ## updates
 
+#### 2020.11.23
+
+It's now possible to set just an icon or image without
+passing a message. Fixes #3 .
+
+#### 20.11.22.0
+
+
+Fix issue where ampersands (`&`) caused problems if they
+where not escaped according to pangos liking (`&amp;`).
+
 #### 2020.11.16
+
 
 Initial release.
 
