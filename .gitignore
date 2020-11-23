@@ -4,3 +4,4 @@ init.sh
 lib/createconf.sh
 genmonify.1
 README.md
+next/

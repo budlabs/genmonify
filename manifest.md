@@ -1,8 +1,8 @@
 ---
 description: >
   precision control for xfce4-panels genmon plugin
-updated:       2020-11-22
-version:       2020.11.22.0
+updated:       2020-11-23
+version:       2020.11.23.0
 author:        budRich
 repo:          https://github.com/budlabs/genmonify
 created:       2020-11-16
