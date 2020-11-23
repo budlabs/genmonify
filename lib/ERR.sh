@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -E
 trap '[ "$?" -ne 98 ] || exit 98' ERR
 
