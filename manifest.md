@@ -1,14 +1,14 @@
 ---
 description: >
   precision control for xfce4-panels genmon plugin
-updated:       2020-11-23
-version:       2020.11.23.1
+updated:       2020-11-24
+version:       2020.11.24.1
 author:        budRich
 repo:          https://github.com/budlabs/genmonify
 created:       2020-11-16
 license:       bsd-2-clause
 type:          default
-dependencies:  [bash, sed, xfce4-panel, xfsettings]
+dependencies:  [bash, gawk, sed, xfce4-panel, xfsettings]
 see-also:      [https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin, polify(1)]
 environ:
     XDG_CONFIG_HOME:   $HOME/.config
@@ -19,6 +19,7 @@ synopsis: |
     [--module|-o MODULE_ALIAS] [--icon|-i ICON_NAME] [--img|-I IMAGE] [--tooltip|-l PANGO] [--progress|-p PERCENTAGE] [--click|-C COMMAND] [--iconclick|-c COMMAND] [--expire-time|-t SECONDS] [--foreground|-f COLOR] [--background|-b COLOR] [--msg|-s MESSAGE] [MESSAGE]
     [--module|-o MODULE_ALIAS] --clear|-x
     [--module|-o MODULE_ALIAS] --get|-g
+    --list
     --help|-h
     --version|-v
 ...
@@ -48,18 +49,24 @@ by sending the following command:
 `xfce4-panel --plugin-event=genmon-ID:refresh:bool:true`  
 
 Where ID should be replaced with the actual plugin-id.
-You can find the plugin-id in the file:   
+
+The easiest way to find the IDs is to exctue
+genmonify with the `--list` option.  
+
+```
+genomify --list
+24    25    18    23    10    19
+```
+
+Found IDs are printed left to right in the order
+they appear in the panel.
+
+If this doesn't work you have to manually find the
+IDs in the file:   
 
 **~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml**  
 find lines that looks like this (search for "*genmon*"):  
 `<property name="plugin-2" type="string" value="genmon"/>`
-
-The following `sed` command printed all genmon
-plugin ID's in my panel:  
-
-```
-sed -rn 's/.+name="plugin-([0-9]+)".+genmon"\/>/\1/pg' ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
-```  
 
 Lets say we have two genmon plugins, and their
 ID's are **2** and **10**. And they have the
