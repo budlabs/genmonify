@@ -37,6 +37,8 @@ main(){
   if ((__o[clear])); then
     echo -n "$zero_width_space" > "$trg_file"
     exec "${cmd_update[@]}"
+  elif ((__o[list])); then
+    listall
   elif ((__o[get])); then
     # print everyting inside <msg> tag (set with -s)
     sed -rn 's/^<msg>([^<]+)<.+/\1/p' "$trg_file"

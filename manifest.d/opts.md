@@ -7,6 +7,10 @@ Show version and exit.
 # options-module-description
 Name of target module
 
+# options-list-description
+Prints the plugin IDs of all Generic Monitors from
+left to right
+
 # options-foreground-description
 color value for MESSAGE foreground color.
 
