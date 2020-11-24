@@ -1,13 +1,12 @@
 # this file will be sourced by genmonify
 # specify the aliases for the modules here
-# you need to know the panel-id of the modules
+# you need to know the plugin-id of the modules
 #
-# try this sed, it should print the ID's of all genmon
-# modules, starting from the left:
-#
-# sed -rn 's/.+name="plugin-([0-9]+)".+genmon"\/>/\1/pg' ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+# use the --list option with genmonify
+# to print all genmon IDs from left to right as they
+# appear.
 # 
-# or try to manually find the id in the file:
+# or try to manually find the ID's in the file:
 # ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
 #
 # below is an example line, and the ID is 2 (plugin-2)
@@ -22,12 +21,10 @@
 #
 # genmonify --module mycustomAlias "whatever™"
 #
-# you can add as many aliases as you want, 
-# one module can even have multiple aliases
 #
-# EXAMPLE:
+# EXAMPLE LIST:
 # -----------
-# modules[moviecool]=2
+# modules[mycustomAlias]=2
 # modules[news]=3
 # modules[webhooked]=2
 
