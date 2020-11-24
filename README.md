@@ -55,21 +55,27 @@ instructions for how to set the aliases for the modules.
 command:  
 `xfce4-panel --plugin-event=genmon-ID:refresh:bool:true`  
 
-Where ID should be replaced with the actual plugin-id. You
-can find the plugin-id in the file:  
+Where ID should be replaced with the actual plugin-id.
+
+The easiest way to find the IDs is to exctue genmonify with
+the `--list` option.  
+
+```
+genomify --list
+24    25    18    23    10    19
+```
+
+
+Found IDs are printed left to right in the order they
+appear in the panel.
+
+If this doesn't work you have to manually find the IDs in
+the file:  
 
 
 **~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml**  
 find lines that looks like this (search for "*genmon*"):  
 `<property name="plugin-2" type="string" value="genmon"/>`
-
-The following `sed` command printed all genmon plugin ID's
-in my panel:  
-
-```
-sed -rn 's/.+name="plugin-([0-9]+)".+genmon"\/>/\1/pg' ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
-```  
-
 
 Lets say we have two genmon plugins, and their ID's are
 **2** and **10**. And they have the following commands set
@@ -172,6 +178,7 @@ genmonify [--module|-o MODULE_ALIAS] [OPTIONS] [MESSAGE]
 genmonify [--module|-o MODULE_ALIAS] [--icon|-i ICON_NAME] [--img|-I IMAGE] [--tooltip|-l PANGO] [--progress|-p PERCENTAGE] [--click|-C COMMAND] [--iconclick|-c COMMAND] [--expire-time|-t SECONDS] [--foreground|-f COLOR] [--background|-b COLOR] [--msg|-s MESSAGE] [MESSAGE]
 genmonify [--module|-o MODULE_ALIAS] --clear|-x
 genmonify [--module|-o MODULE_ALIAS] --get|-g
+genmonify --list
 genmonify --help|-h
 genmonify --version|-v
 ```
@@ -222,6 +229,10 @@ Clears the module.
 Prints the content of target modules `<msg>` if there is
 any.
 
+`--list`  
+Prints the plugin IDs of all Generic Monitors from left to
+right
+
 `--help`|`-h`  
 Show help and exit.
 
@@ -230,7 +241,13 @@ Show version and exit.
 
 ## updates
 
+#### 2020.11.24
+
+Added `--list` option to fetch the order of the pluginIDs
+more conveniently.
+
 #### 2020.11.23.2
+
 
 Fixed a typo, that made it impossible to only display an
 image with no text. Fixes #3, (again).
@@ -249,11 +266,6 @@ passing a message. Fixes #3 .
 
 Fix issue where ampersands (`&`) caused problems if they
 where not escaped according to pangos liking (`&amp;`).
-
-#### 2020.11.16
-
-
-Initial release.
 
 
 ## license
