@@ -1,5 +1,5 @@
 .nh
-.TH GENMONIFY 1 2020\-11\-23 Linux "User Manuals"
+.TH GENMONIFY 1 2020\-11\-24 Linux "User Manuals"
 .SH NAME
 .PP
 \fB\fCgenmonify\fR \- precision control for xfce4\-panels
@@ -14,6 +14,7 @@ genmonify [\-\-module|\-o MODULE\_ALIAS] [OPTIONS] [MESSAGE]
 genmonify [\-\-module|\-o MODULE\_ALIAS] [\-\-icon|\-i ICON\_NAME] [\-\-img|\-I IMAGE] [\-\-tooltip|\-l PANGO] [\-\-progress|\-p PERCENTAGE] [\-\-click|\-C COMMAND] [\-\-iconclick|\-c COMMAND] [\-\-expire\-time|\-t SECONDS] [\-\-foreground|\-f COLOR] [\-\-background|\-b COLOR] [\-\-msg|\-s MESSAGE] [MESSAGE]
 genmonify [\-\-module|\-o MODULE\_ALIAS] \-\-clear|\-x
 genmonify [\-\-module|\-o MODULE\_ALIAS] \-\-get|\-g
+genmonify \-\-list
 genmonify \-\-help|\-h
 genmonify \-\-version|\-v
 
@@ -58,7 +59,29 @@ by sending the following command:
 
 .PP
 Where ID should be replaced with the actual
-plugin\-id. You can find the plugin\-id in the file:
+plugin\-id.
+
+.PP
+The easiest way to find the IDs is to exctue
+genmonify with the \fB\fC\-\-list\fR option.
+
+.PP
+.RS
+
+.nf
+genomify \-\-list
+24    25    18    23    10    19
+
+.fi
+.RE
+
+.PP
+Found IDs are printed left to right in the order
+they appear in the panel.
+
+.PP
+If this doesn't work you have to manually find
+the IDs in the file:
 
 .PP
 \fB\~/.config/xfce4/xfconf/xfce\-perchannel\-xml/xfce4\-panel.xml\fP
@@ -70,125 +93,113 @@ find lines that looks like this (search for
 value="genmon"/>\fR
 
 .PP
-The following \fB\fCsed\fR command printed all genmon
-plugin ID's in my panel:
+Lets say we have two genmon plugins, and their
+ID's are \fB2\fP and \fB10\fP\&. And they have the
+following commands set in their respective
+properties:
+.br
+2: \fB\fCgenmonify \-\-module mediainfo\fR
+.br
+10: \fB\fCgenmonify \-\-module internet\fR
+
+.PP
+we should then add the following lines to the
+\fBmodule\-list file\fP:
 
 .PP
 .RS
 
 .nf
-sed \-rn 's/.+name="plugin\-([0\-9]+)".+genmon"\\/>/\\1/pg' \~/.config/xfce4/xfconf/xfce\-perchannel\-xml/xfce4\-panel.xml
-```  
-
-
-
-Lets say we have two genmon plugins, and their
-ID's are **2** and **10**. And they have the
-following commands set in their respective
-properties:  
-2: `genmonify \-\-module mediainfo`  
-10: `genmonify \-\-module internet`  
-
-we should then add the following lines to the
-**module\-list file**:  
-
-.fi
-.RE
-
-.PP
 modules[mediainfo]=2
 modules[internet]=10
 
+.fi
+.RE
+
+.PP
+When genmonify is executed with only the
+\fB\fC\-\-module MODULE\_NAME\fR option, all it will do is
+\fB\fCcat\fR the content of the file:
+\fB\fC/tmp/genmonify/MODULE\_NAME\fR . When this is done
+from a genmon plugin in the panel, it will set the
+plugins text \fBbased\fP on the content of the file.
+
+.PP
+Any arguments to the \fB\fCgenmonify\fR command that
+doesn't belong to an option, will get redirected
+(and formatted if needed or requested) to
+\fB\fC/tmp/genmonify/MODULE\_NAME\fR\&. Then the command
+\fB\fCxfce4\-panel
+\-\-plugin\-event=genmon\-ID:refresh:bool:true\fR  will
+
+.PP
+get executed, causing the module to get updated.
+
+.PP
+EXAMPLE:
+
 .PP
 .RS
 
 .nf
-
-
-
-
-When genmonify is executed with only the
-`\-\-module MODULE\_NAME` option, all it will do is
-`cat` the content of the file:
-`/tmp/genmonify/MODULE\_NAME` . When this is done
-from a genmon plugin in the panel, it will set the
-plugins text **based** on the content of the file.  
-
-Any arguments to the `genmonify` command that
-doesn't belong to an option, will get redirected
-(and formatted if needed or requested) to
-`/tmp/genmonify/MODULE\_NAME`. Then the command
-`xfce4\-panel
-\-\-plugin\-event=genmon\-ID:refresh:bool:true`  will
-
-get executed, causing the module to get updated.
-
-EXAMPLE:  
-
+$ genmonify \-\-module mediainfo testing one three four
 
 .fi
 .RE
 
 .PP
-$ genmonify \-\-module mediainfo testing one three four
-
-.PP
-.RS
-
-.nf
-
-
-
 this will first create (or overwrite) the file:
 /tmp/genmonify/mediainfo with the single line:
 testing one three four
 
-then the command:  `xfce4\-panel
-\-\-plugin\-event=genmon\-2:refresh:bool:true`  
-is automatically executed, which will update the 
-plugin and the **Command** set in the properties 
-will run again: (`genmonify \-\-module mediainfo`),
+.PP
+then the command:  \fB\fCxfce4\-panel
+\-\-plugin\-event=genmon\-2:refresh:bool:true\fR
+.br
+is automatically executed, which will update the
+plugin and the \fBCommand\fP set in the properties
+will run again: (\fB\fCgenmonify \-\-module mediainfo\fR),
 which in turn will update the module with the
 string: "testing one three four"
 
-
-The `\-\-expire\-time SECONDS` option can be used to
+.PP
+The \fB\fC\-\-expire\-time SECONDS\fR option can be used to
 clear the module when SECONDS have passed. It is
 also possible to manually clear a module with the
-`\-\-clear` option.  
-
-genmonify is shipped with the script
-**genmonifypop**, which can be used to execute
-commands on the `\-\-msg`line. It will only execute
-a command if it is prefixed with the word
-**POLIPOP**. And the first argument to
-**genmonifypop** needs to be the name of the
-module, it is sweet to bind genmonifypop to a
-hotkey...
-
-
-
-.fi
-.RE
+\fB\fC\-\-clear\fR option.
 
 .PP
-$ genmonify \-\-module genmonifyModule1 \-\-msg "POLIPOP notify\-send 'hello pop'" hello guy
-$ genmonifypop genmonifyModule1
+genmonify is shipped with the script
+\fBgenmonifypop\fP, which can be used to execute
+commands on the \fB\fC\-\-msg\fRline. It will only execute
+a command if it is prefixed with the word
+\fBPOLIPOP\fP\&. And the first argument to
+\fBgenmonifypop\fP needs to be the name of the
+module, it is sweet to bind genmonifypop to a
+hotkey...
 
 .PP
 .RS
 
 .nf
+$ genmonify \-\-module genmonifyModule1 \-\-msg "POLIPOP notify\-send 'hello pop'" hello guy
+$ genmonifypop genmonifyModule1
 
+.fi
+.RE
 
+.PP
+In the example below you can see how \fB\fC\-\-msg\fR and
+\fB\fC\-\-get\fR can be used to keep track and toggle a
+modules state.
 
-In the example below you can see how `\-\-msg` and
-`\-\-get` can be used to keep track and toggle a
-modules state.  
+.PP
+\fB\fCgenmonifymodetoggler.sh\fR
 
-`genmonifymodetoggler.sh`  
+.PP
+.RS
 
-``` shell
+.nf
 #!/bin/bash
 
 thisscript="$(readlink \-f "$0")"
@@ -289,6 +300,12 @@ Prints the content of target modules \fB\fC<msg>\fR if
 there is any.
 
 .PP
+\fB\fC\-\-list\fR
+.br
+Prints the plugin IDs of all Generic Monitors
+from left to right
+
+.PP
 \fB\fC\-\-help\fR|\fB\fC\-h\fR
 .br
 Show help and exit.
@@ -319,7 +336,7 @@ defaults to: /tmp/genmonify
 
 .SH DEPENDENCIES
 .PP
-\fB\fCbash\fR \fB\fCsed\fR \fB\fCxfce4\-panel\fR \fB\fCxfsettings\fR
+\fB\fCbash\fR \fB\fCgawk\fR \fB\fCsed\fR \fB\fCxfce4\-panel\fR \fB\fCxfsettings\fR
 
 .PP
 budRich https://github.com/budlabs/genmonify

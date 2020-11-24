@@ -3,8 +3,8 @@
 ___printversion(){
   
 cat << 'EOB' >&2
-genmonify - version: 2020.11.23.1
-updated: 2020-11-23 by budRich
+genmonify - version: 2020.11.24.2
+updated: 2020-11-24 by budRich
 EOB
 }
 
@@ -52,6 +52,8 @@ main(){
   if ((__o[clear])); then
     echo -n "$zero_width_space" > "$trg_file"
     exec "${cmd_update[@]}"
+  elif ((__o[list])); then
+    listall
   elif ((__o[get])); then
     # print everyting inside <msg> tag (set with -s)
     sed -rn 's/^<msg>([^<]+)<.+/\1/p' "$trg_file"
@@ -107,6 +109,7 @@ genmonify [--module|-o MODULE_ALIAS] [OPTIONS] [MESSAGE]
 genmonify [--module|-o MODULE_ALIAS] [--icon|-i ICON_NAME] [--img|-I IMAGE] [--tooltip|-l PANGO] [--progress|-p PERCENTAGE] [--click|-C COMMAND] [--iconclick|-c COMMAND] [--expire-time|-t SECONDS] [--foreground|-f COLOR] [--background|-b COLOR] [--msg|-s MESSAGE] [MESSAGE]
 genmonify [--module|-o MODULE_ALIAS] --clear|-x
 genmonify [--module|-o MODULE_ALIAS] --get|-g
+genmonify --list
 genmonify --help|-h
 genmonify --version|-v
 
@@ -174,6 +177,11 @@ Prints the content of target modules <msg> if
 there is any.
 
 
+--list  
+Prints the plugin IDs of all Generic Monitors
+from left to right
+
+
 --help|-h  
 Show help and exit.
 
@@ -200,14 +208,13 @@ mkdir -p "$1" "${aconfdirs[@]}"
 cat << 'EOCONF' > "$trgdir/module-list"
 # this file will be sourced by genmonify
 # specify the aliases for the modules here
-# you need to know the panel-id of the modules
+# you need to know the plugin-id of the modules
 #
-# try this sed, it should print the ID's of all genmon
-# modules, starting from the left:
-#
-# sed -rn 's/.+name="plugin-([0-9]+)".+genmon"\/>/\1/pg' ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+# use the --list option with genmonify
+# to print all genmon IDs from left to right as they
+# appear.
 # 
-# or try to manually find the id in the file:
+# or try to manually find the ID's in the file:
 # ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
 #
 # below is an example line, and the ID is 2 (plugin-2)
@@ -222,12 +229,10 @@ cat << 'EOCONF' > "$trgdir/module-list"
 #
 # genmonify --module mycustomAlias "whatever™"
 #
-# you can add as many aliases as you want, 
-# one module can even have multiple aliases
 #
-# EXAMPLE:
+# EXAMPLE LIST:
 # -----------
-# modules[moviecool]=2
+# modules[mycustomAlias]=2
 # modules[news]=3
 # modules[webhooked]=2
 
@@ -271,11 +276,48 @@ ERH(){
   exit 77
 }
 
+listall() {
+
+  local file
+  file=$XDG_CONFIG_HOME/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+
+  [[ -f $file ]] || ERX "$file not found"
+
+  awk '
+    # <property name="plugin-23" type="string" value="genmon"/>
+    # use these properties to identify all genmon modules
+    # store ID in genmons array
+    #
+    match($0,/.+name="plugin-([0-9]+)".+genmon"\/>/,ma) \
+      { genmons[ma[1]]=1 }
+
+
+    # <property name="plugin-ids" type="array">
+    #   <value type="int" value="20"/>
+    #   ...
+    # </property>
+    # plugin-ids array, contain the order of plugins
+    # print value (padded with space) if it stored in genmons array
+    #
+    match($0,/<value type="int" value="([0-9]+)"\/>/,ma) \
+      && (genmons[ma[1]]) { printf("%-6s",ma[1]) }
+
+    END {print ""}
+
+  # since the plugin-ids array appear before we know
+  # the type the IDs refer to. We parse the file twice.
+  #
+  ' "$file" "$file"
+  
+}
+
+
+
 declare -A __o
 options="$(
   getopt --name "[ERROR]:genmonify" \
     --options "o:i:I:l:p:C:c:t:f:b:s:xghv" \
-    --longoptions "module:,icon:,img:,tooltip:,progress:,click:,iconclick:,expire-time:,foreground:,background:,msg:,clear,get,help,version," \
+    --longoptions "module:,icon:,img:,tooltip:,progress:,click:,iconclick:,expire-time:,foreground:,background:,msg:,clear,get,list,help,version," \
     -- "$@" || exit 98
 )"
 
@@ -297,6 +339,7 @@ while true; do
     --msg        | -s ) __o[msg]="${2:-}" ; shift ;;
     --clear      | -x ) __o[clear]=1 ;; 
     --get        | -g ) __o[get]=1 ;; 
+    --list       ) __o[list]=1 ;; 
     --help       | -h ) ___printhelp && exit ;;
     --version    | -v ) ___printversion && exit ;;
     -- ) shift ; break ;;
