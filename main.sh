@@ -36,7 +36,7 @@ main(){
 
   if ((__o[clear])); then
     echo -n "$zero_width_space" > "$trg_file"
-    exec "${cmd_update[@]}"
+    "${cmd_update[@]}" > /dev/null 2>&1
   elif ((__o[list])); then
     listall
   elif ((__o[get])); then
@@ -67,7 +67,7 @@ main(){
       && op+=$'\n'"<img>${__o[img]}</img>"
 
     echo "$op" > "$trg_file"
-    "${cmd_update[@]}"
+    "${cmd_update[@]}" > /dev/null 2>&1
 
     ((__o[expire-time])) && { 
       sleep "${__o[expire-time]}"
@@ -75,7 +75,7 @@ main(){
       # the sleep:
       [[ $op = "$(< "$trg_file")" ]] && {
         echo -n "$zero_width_space" > "$trg_file"
-        exec "${cmd_update[@]}"
+        "${cmd_update[@]}" > /dev/null 2>&1
       }
     } &
   fi
