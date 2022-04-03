@@ -3,7 +3,8 @@ target:   ___getopt
 markdown: false
 wrap:     50
 ...
-
+# SC2034 __o appears unused.
+# shellcheck disable=2034
 declare -A __o
 options="$(
   getopt --name "[ERROR]:%%name%%" \

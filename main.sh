@@ -41,7 +41,8 @@ main(){
     listall
   elif ((__o[get])); then
     # print everyting inside <msg> tag (set with -s)
-    sed -rn 's/^<msg>([^<]+)<.+/\1/p' "$trg_file"
+    [[ -f $trg_file ]] \
+      && sed -rn 's/^<msg>([^<]+)<.+/\1/p' "$trg_file"
   elif [[ -z $message${__o[img]}${__o[icon]} ]]; then
     # this is the default action that the module itself
     # should get. activated when there are no message.
