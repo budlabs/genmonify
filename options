@@ -1,0 +1,7 @@
+[--module|-o MODULE_ALIAS] [OPTIONS] [MESSAGE]
+[--module|-o MODULE_ALIAS] [--icon|-i ICON_NAME] [--img|-I IMAGE] [--tooltip|-l PANGO] [--progress|-p PERCENTAGE] [--click|-C COMMAND] [--iconclick|-c COMMAND] [--expire-time|-t SECONDS] [--foreground|-f COLOR] [--background|-b COLOR] [--msg|-s MESSAGE] [MESSAGE]
+[--module|-o MODULE_ALIAS] --clear|-x
+[--module|-o MODULE_ALIAS] --get|-g
+--list
+--help|-h
+--version|-v

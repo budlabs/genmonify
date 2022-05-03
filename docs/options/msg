@@ -1,0 +1,4 @@
+set the `<msg>` field
+
+This is not visible in the panel, but the string
+can be retrieved with the `--get` option.

@@ -1,0 +1,3 @@
+set text to display in the tooltip
+
+pango markup can be used for style and color. 
