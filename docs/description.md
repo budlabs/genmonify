@@ -1,5 +1,3 @@
-## USAGE
-
 To make genmonify (and genmon) somewhat usable you need to do two things:  
 1. set up one or more genmon plugins/modules in your xfce4-panel  
 2. set up aliases for these modules.  

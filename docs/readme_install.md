@@ -11,6 +11,7 @@ and the manpage.
 ```
 $ git clone https://github.com/budlabs/genmonify.git
 $ cd genmonify
+$ make
 # make install
 $ genmonify -v
 genmonify - version: 2020.11.16.0

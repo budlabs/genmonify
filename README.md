@@ -1,5 +1,4 @@
 # genmonify - precision control for xfce4-panels genmon plugin
-
 I created this to replicate the functionality I
 got with **polybar** hook modules and [polify] in
 the XFCE panel with the [genmon] plugin.
@@ -17,6 +16,7 @@ and the manpage.
 ```
 $ git clone https://github.com/budlabs/genmonify.git
 $ cd genmonify
+$ make
 # make install
 $ genmonify -v
 genmonify - version: 2020.11.16.0
@@ -28,24 +28,6 @@ updated: 2020-11-16 by budRich
 [AUR]: https://aur.archlinux.org/packages/genmonify/
 
 ## options
-
-    -i, --icon        ICON_NAME    | name (not path) of icon for `<icon>`
-    -g, --get                      | prints the content of target modules `<msg>`
-    -c, --iconclick   COMMAND      | COMMAND will be executed when the **ICON** is clicked.
-    -t, --expire-time SECONDS      | if set module will get cleared after SECONDS
-    -p, --progress    PERCENTAGE   | percentage to display in the progressbar.
-    -o, --module      MODULE_ALIAS | name of target module
-    -x, --clear                    | clears the module.
-    -v, --version                  | print version info and exit  
-    -h, --help                     | print help and exit  
-    --list                         | list IDs of Generic Monitors, left to right in active panel
-    -s, --msg         MESSAGE      | set the `<msg>` field
-    -C, --click       COMMAND      | COMMAND will be executed when the IMAGE is clicked.
-    -I, --img         IMAGE        | full path to image to prefix the label with
-    -f, --foreground  COLOR        | color value for MESSAGE foreground color.
-    -b, --background  COLOR        | color value for MESSAGE background color.
-    -l, --tooltip     PANGO        | set text to display in the tooltip
-## USAGE
 
 To make genmonify (and genmon) somewhat usable you need to do two things:  
 1. set up one or more genmon plugins/modules in your xfce4-panel  

@@ -1,0 +1,270 @@
+.nh
+.TH GENMONIFY  1 2022-06-03 budlabs "User Manuals"
+.SH NAME
+.PP
+genmonify - precision control for xfce4-panels genmon plugin
+
+.SH SYNOPSIS
+.PP
+.RS
+
+.nf
+genmonify [--module|-o MODULE_ALIAS] [OPTIONS] [MESSAGE]
+genmonify [--module|-o MODULE_ALIAS] [--icon|-i ICON_NAME] [--img|-I IMAGE] [--tooltip|-l PANGO] [--progress|-p PERCENTAGE] [--click|-C COMMAND] [--iconclick|-c COMMAND] [--expire-time|-t SECONDS] [--foreground|-f COLOR] [--background|-b COLOR] [--msg|-s MESSAGE] [MESSAGE]
+genmonify [--module|-o MODULE_ALIAS] --clear|-x
+genmonify [--module|-o MODULE_ALIAS] --get|-g
+genmonify --list
+genmonify --help|-h
+genmonify --version|-v
+
+.fi
+.RE
+
+.SH USAGE
+.PP
+To make genmonify (and genmon) somewhat usable you need to do two things:
+.br
+1. set up one or more genmon plugins/modules in your xfce4-panel
+.br
+2. set up aliases for these modules.
+
+.PP
+The first step is easy, just add a genmon module
+to your panel and open its properties dialog.
+There as the \fBcommand\fP enter:
+.br
+\fB\fCgenmonify --module NAME\fR
+.br
+where NAME can be anything you
+want. Also be sure to set the \fBPeriod\fP
+(interval) to max value of 86400 seconds (24h).
+
+.PP
+The second step is a little bit trickier. First
+execute \fB\fCgenmonify\fR without any arguments. This
+should create an example \fIalias-file\fP\&. The default
+location for this file is
+\fB~/.config/genmonify/module-list\fP In that file
+there are instructions for how to set the aliases
+for the modules. \fBgenmonify\fP updates the modules
+by sending the following command:
+.br
+\fB\fCxfce4-panel --plugin-event=genmon-ID:refresh:bool:true\fR
+
+.PP
+Where ID should be replaced with the actual plugin-id.
+
+.PP
+The easiest way to find the IDs is to exctue
+genmonify with the \fB\fC--list\fR option.
+
+.PP
+.RS
+
+.nf
+genomify --list
+24    25    18    23    10    19
+
+.fi
+.RE
+
+.PP
+Found IDs are printed left to right in the order
+they appear in the panel.
+
+.PP
+If this doesn't work you have to manually find the
+IDs in the file:
+
+.PP
+\fB~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml\fP
+.br
+find lines that looks like this (search for "\fIgenmon\fP"):
+.br
+\fB\fC<property name="plugin-2" type="string" value="genmon"/>\fR
+
+.PP
+Lets say we have two genmon plugins, and their
+ID's are \fB2\fP and \fB10\fP\&. And they have the
+following commands set in their respective
+properties:
+.br
+2: \fB\fCgenmonify --module mediainfo\fR
+.br
+10: \fB\fCgenmonify --module internet\fR
+
+.PP
+we should then add the following lines to the \fBmodule-list file\fP:
+
+.PP
+.RS
+
+.nf
+modules[mediainfo]=2
+modules[internet]=10
+
+.fi
+.RE
+
+.PP
+When genmonify is executed with only the \fB\fC--module
+MODULE_NAME\fR option, all it will do is \fB\fCcat\fR the
+content of the file: \fB\fC/tmp/genmonify/MODULE_NAME\fR
+. When this is done from a genmon plugin in the
+panel, it will set the plugins text \fBbased\fP on
+the content of the file.
+
+.PP
+Any arguments to the \fB\fCgenmonify\fR command that
+doesn't belong to an option, will get redirected
+(and formatted if needed or requested) to
+\fB\fC/tmp/genmonify/MODULE_NAME\fR\&. Then the command
+\fB\fCxfce4-panel --plugin-event=genmon-ID:refresh:bool:true\fR
+will get executed, causing the module to get updated.
+
+.PP
+EXAMPLE:
+
+.PP
+.RS
+
+.nf
+$ genmonify --module mediainfo testing one three four
+
+.fi
+.RE
+
+.PP
+this will first create (or overwrite) the file: /tmp/genmonify/mediainfo
+with the single line:
+testing one three four
+
+.PP
+then the command:
+\fB\fCxfce4-panel --plugin-event=genmon-2:refresh:bool:true\fR
+.br
+is automatically executed, which will update the
+plugin and the \fBCommand\fP set in the properties
+will run again: (\fB\fCgenmonify --module mediainfo\fR),
+which in turn will update the module with the
+string: "testing one three four"
+
+.PP
+The \fB\fC--expire-time SECONDS\fR option can be used to
+clear the module when SECONDS have passed. It is
+also possible to manually clear a module with the
+\fB\fC--clear\fR option.
+
+.PP
+genmonify is shipped with the script
+\fBgenmonifypop\fP, which can be used to execute
+commands on the \fB\fC--msg\fRline. It will only execute
+a command if it is prefixed with the word
+\fBPOLIPOP\fP\&. And the first argument to
+\fBgenmonifypop\fP needs to be the name of the
+module, it is sweet to bind genmonifypop to a
+hotkey...
+
+.PP
+.RS
+
+.nf
+$ genmonify --module genmonifyModule1 --msg "POLIPOP notify-send 'hello pop'" hello guy
+$ genmonifypop genmonifyModule1
+
+.fi
+.RE
+
+.PP
+In the example below you can see how \fB\fC--msg\fR and
+\fB\fC--get\fR can be used to keep track and toggle a
+modules state.
+
+.PP
+\fB\fCgenmonifymodetoggler.sh\fR
+
+.PP
+.RS
+
+.nf
+#!/bin/bash
+
+thisscript="$(readlink -f "$0")"
+
+if [[ $(genmonify --module genmonifyModule1 --get) = mode1 ]]; then
+    genmonify --module genmonifyModule1   \\
+           --iconclick "$thisscript"      \\
+           --foreground '#00FF00'         \\
+           --icon dialog-warning          \\
+           --msg "mode2"                  \\
+           this is mode two
+else 
+    genmonify --module genmonifyModule1   \\
+           --iconclick "$thisscript"      \\
+           --foreground '#FF0000'         \\
+           --icon dialog-warning          \\
+           --msg "mode1"                  \\
+           this is mode one
+fi
+
+.fi
+.RE
+
+.SH OPTIONS
+.PP
+.RS
+
+.nf
+-b, --background  COLOR        | color value for MESSAGE background color.
+-x, --clear                    | clears the module.
+-C, --click       COMMAND      | COMMAND will be executed when the IMAGE is clicked.
+-t, --expire-time SECONDS      | if set module will get cleared after SECONDS
+-f, --foreground  COLOR        | color value for MESSAGE foreground color.
+-g, --get                      | prints the content of target modules `<msg>`
+-h, --help                     | print help and exit  
+-i, --icon        ICON_NAME    | name (not path) of icon for `<icon>`
+-c, --iconclick   COMMAND      | COMMAND will be executed when the **ICON** is clicked.
+-I, --img         IMAGE        | full path to image to prefix the label with
+--list                         | list IDs of Generic Monitors, left to right in active panel
+-o, --module      MODULE_ALIAS | name of target module
+-s, --msg         MESSAGE      | set the `<msg>` field
+-p, --progress    PERCENTAGE   | percentage to display in the progressbar.
+-l, --tooltip     PANGO        | set text to display in the tooltip
+-v, --version                  | print version info and exit  
+
+.fi
+.RE
+
+.SS -s, --msg         MESSAGE
+.PP
+This is not visible in the panel, but the string
+can be retrieved with the \fB\fC--get\fR option.
+
+.SS -l, --tooltip     PANGO
+.PP
+pango markup can be used for style and color.
+
+.SH ENVIRONMENT
+.SS XDG_CONFIG_HOME
+.PP
+defaults to: $HOME/.config
+
+.SS GENMONIFY_DIR
+.PP
+defaults to: $XDG_CONFIG_HOME/genmonify
+
+.SS GENMONIFY_TMP_DIR
+.PP
+defaults to: /tmp/genmonify
+
+.SH CONTACT
+.PP
+Send bugs and feature requests to:
+.br
+https://github.com/budlabs/genmonify/issues
+
+.SH COPYRIGHT
+.PP
+Copyright (c) 2020-2022, budRich of budlabs
+.br
+SPDX-License-Identifier: BSD-2-Clause

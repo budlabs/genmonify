@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash #bashbud
 
 trap 'CLEANUP' EXIT INT HUP
 
