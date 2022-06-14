@@ -7,10 +7,7 @@ AUTHOR       := budRich
 ORGANISATION := budlabs
 CONTACT      := https://github.com/budlabs/genmonify
 USAGE        := $(NAME) [OPTIONS]
-
 LICENSE      := BSD-2-Clause
-
-# CUSTOM_TARGETS += README.md
 
 README_DEPS  =                  \
 	$(DOCS_DIR)/readme_banner.md  \
@@ -39,12 +36,11 @@ MANPAGE_DEPS =                       \
 	$(DOCS_DIR)/manpage_environ.md     \
 	$(CACHE_DIR)/copyright.txt
 
-# CUSTOM_TARGETS += $(MANPAGE_OUT)
-MANPAGE_OUT = $(MANPAGE)
+MANPAGE = $(NAME).1
 .PHONY: manpage
-manpage: $(MANPAGE_OUT)
+manpage: $(MANPAGE)
 
-$(MANPAGE_OUT): config.mak $(MANPAGE_DEPS) 
+$(MANPAGE): config.mak $(MANPAGE_DEPS) 
 	@$(info making $@)
 	uppercase_name=$(NAME)
 	uppercase_name=$${uppercase_name^^}
@@ -74,22 +70,3 @@ $(MANPAGE_OUT): config.mak $(MANPAGE_DEPS)
 		cat $(CACHE_DIR)/copyright.txt
 
 	} | go-md2man > $@
-
-
-
-
-installed_manpage    = $(DESTDIR)$(PREFIX)/share/man/man$(manpage_section)/$(MANPAGE)
-installed_script    := $(DESTDIR)$(PREFIX)/bin/$(NAME)
-installed_license   := $(DESTDIR)$(PREFIX)/share/licenses/$(NAME)/$(LICENSE)
-
-install: all
-	install -Dm644 $(MANPAGE_OUT) $(installed_manpage)
-	install -Dm644 LICENSE $(installed_license)
-	install -Dm755 $(MONOLITH) $(installed_script)
-
-uninstall:
-	@for f in $(installed_script) $(installed_manpage) $(installed_license); do
-		[[ -f $$f ]] || continue
-		echo "rm $$f"
-		rm "$$f"
-	done
