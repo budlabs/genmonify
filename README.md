@@ -28,6 +28,7 @@ updated: 2020-11-16 by budRich
 [AUR]: https://aur.archlinux.org/packages/genmonify/
 
 ## options
+```
 -b, --background  COLOR        | color value for MESSAGE background color.
 -x, --clear                    | clears the module.
 -C, --click       COMMAND      | COMMAND will be executed when the IMAGE is clicked.
@@ -44,6 +45,7 @@ updated: 2020-11-16 by budRich
 -p, --progress    PERCENTAGE   | percentage to display in the progressbar.
 -l, --tooltip     PANGO        | set text to display in the tooltip
 -v, --version                  | print version info and exit  
+```
 ## usage
 To make genmonify (and genmon) somewhat usable you need to do two things:  
 1. set up one or more genmon plugins/modules in your xfce4-panel  
