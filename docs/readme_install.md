@@ -22,5 +22,3 @@ updated: 2020-11-16 by budRich
 [genmon]: https://gitlab.xfce.org/panel-plugins/xfce4-genmon-plugin
 [AUR]: https://aur.archlinux.org/packages/genmonify/
 
-## options
-
