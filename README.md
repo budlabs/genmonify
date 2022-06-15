@@ -28,7 +28,23 @@ updated: 2020-11-16 by budRich
 [AUR]: https://aur.archlinux.org/packages/genmonify/
 
 ## options
-
+-b, --background  COLOR        | color value for MESSAGE background color.
+-x, --clear                    | clears the module.
+-C, --click       COMMAND      | COMMAND will be executed when the IMAGE is clicked.
+-t, --expire-time SECONDS      | if set module will get cleared after SECONDS
+-f, --foreground  COLOR        | color value for MESSAGE foreground color.
+-g, --get                      | prints the content of target modules `<msg>`
+-h, --help                     | print help and exit  
+-i, --icon        ICON_NAME    | name (not path) of icon for `<icon>`
+-c, --iconclick   COMMAND      | COMMAND will be executed when the **ICON** is clicked.
+-I, --img         IMAGE        | full path to image to prefix the label with
+--list                         | list IDs of Generic Monitors, left to right in active panel
+-o, --module      MODULE_ALIAS | name of target module
+-s, --msg         MESSAGE      | set the `<msg>` field
+-p, --progress    PERCENTAGE   | percentage to display in the progressbar.
+-l, --tooltip     PANGO        | set text to display in the tooltip
+-v, --version                  | print version info and exit  
+## usage
 To make genmonify (and genmon) somewhat usable you need to do two things:  
 1. set up one or more genmon plugins/modules in your xfce4-panel  
 2. set up aliases for these modules.  

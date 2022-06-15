@@ -22,6 +22,9 @@ README.md: config.mak $(README_DEPS)
 		echo "# $(NAME) - $(DESCRIPTION)"
 		cat $(DOCS_DIR)/readme_banner.md
 		cat $(DOCS_DIR)/readme_install.md
+		echo '## options'
+		cat $(CACHE_DIR)/help_table.txt
+		echo '## usage'
 		cat $(DOCS_DIR)/description.md
 		cat $(DOCS_DIR)/readme_footer.md
 		cat $(DOCS_DIR)/releasenotes/0_next.md
