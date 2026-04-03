@@ -1,8 +1,8 @@
 NAME         := genmonify
 CREATED      := 2020-11-16
-UPDATED      := 2022-06-16
+UPDATED      := 2022-06-19
 DESCRIPTION  := precision control for xfce4-panels genmon plugin
-VERSION      := 2022.06.16.1
+VERSION      := 2022.06.19.1
 AUTHOR       := budRich
 ORGANISATION := budlabs
 CONTACT      := https://github.com/budlabs/genmonify

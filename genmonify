@@ -13,7 +13,7 @@ main(){
   message="$*"
 
   declare -A modules=([gurl]=2 [mediainfo]=10)
-
+  declare -g module
   # the aliasfile will override the modules array
   aliasfile=$GENMONIFY_DIR/module-list
   [[ -f $aliasfile ]] || createconf "$GENMONIFY_DIR"
@@ -23,15 +23,6 @@ main(){
 
   # module should here have the actual panel-id
   module="${_o[module]:+${modules[${_o[module]}]}}"
-
-  # if no module is found in the modules array
-  # it is still possible to trigger an update event
-  # and the first found (?) genmon module will get
-  # updated
-  cmd_update=(
-    xfce4-panel 
-    "--plugin-event=genmon${module:+-$module}:refresh:bool:true"
-  )
 
   trg_file="$GENMONIFY_TMP_DIR/${_o[module]:-default}"
   mkdir -p "${trg_file%/*}"
@@ -44,7 +35,7 @@ main(){
 
   if ((_o[clear])); then
     echo -n "$zero_width_space" > "$trg_file"
-    "${cmd_update[@]}" > /dev/null 2>&1
+    update_module
   elif ((_o[list])); then
     listall
   elif ((_o[get])); then
@@ -76,7 +67,7 @@ main(){
       && op+=$'\n'"<img>${_o[img]}</img>"
 
     echo "$op" > "$trg_file"
-    "${cmd_update[@]}" > /dev/null 2>&1
+    update_module
 
     ((_o[expire-time])) && { 
       sleep "${_o[expire-time]}"
@@ -84,7 +75,7 @@ main(){
       # the sleep:
       [[ $op = "$(< "$trg_file")" ]] && {
         echo -n "$zero_width_space" > "$trg_file"
-        "${cmd_update[@]}" > /dev/null 2>&1
+        update_module
       }
     } &
   fi
